@@ -1,13 +1,10 @@
-name: RunTests
+name: Deploy
 
-on: push
+on: workflow_dispatch
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
-    env:
-      test: true
 
     strategy:
       matrix:
@@ -21,7 +18,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Build
+      - name: Install Deps
         run: |
           npm install
-          npx jest --forceExit
+
+      - name: Build
+        run: |
+          npm run build
+
+      - name: Publish
+        run: |
+          npm publish
