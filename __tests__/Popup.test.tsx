@@ -1,175 +1,220 @@
 /** @jest-environment jsdom */
 
-import React from 'react';
-import { DialogType, PopupProvider, usePopup } from '../src/lib';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import React from "react";
+import { DialogType, PopupProvider, usePopup } from "../src/lib";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 
 const ComponentToTest = () => {
-    return (
-        <PopupProvider>
-            <MainComponent />
-        </PopupProvider>
-    )
-}
+  return (
+    <PopupProvider>
+      <MainComponent />
+    </PopupProvider>
+  );
+};
 
 let MainComponent: () => JSX.Element;
 
-describe('should successfully show and close dialogs', () => {
+describe("should successfully show and close dialogs", () => {
+  it("should successfully show and close alert", () => {
+    MainComponent = () => {
+      const { showAlert } = usePopup();
 
-    it('should successfully show and close alert', () => {
+      return (
+        <div>
+          <button
+            onClick={() =>
+              showAlert({
+                type: DialogType.DANGER,
+                text: "This is a test",
+              })
+            }
+          >
+            Show Alert
+          </button>
+        </div>
+      );
+    };
 
-        MainComponent = () => {
-            const { showAlert } = usePopup();
+    const { container } = render(<ComponentToTest />);
 
-            return (
-                <div>
-                    <button onClick={() => showAlert({
-                        type: DialogType.DANGER,
-                        text: 'This is a test'
-                    })}>Show Alert</button>
-                </div>
-            )
-        };
+    const button = container.querySelector("button")!;
 
-        const { container } = render(<ComponentToTest />);
+    fireEvent.click(button);
 
-        const button = container.querySelector('button');
+    const dialogWrapper = container.querySelector(
+      ".react-custom-dialog-wrapper"
+    )!;
+    const dialogFooter = dialogWrapper.querySelector(".react-custom-footer")!;
+    const closeButton = dialogFooter.querySelector(
+      ".react-custom-option-button"
+    )!;
 
-        fireEvent.click(button);
+    fireEvent.click(closeButton);
 
-        const dialogWrapper = container.querySelector(".react-custom-dialog-wrapper");
-        const dialogFooter = dialogWrapper.querySelector('.react-custom-footer');
-        const closeButton = dialogFooter.querySelector('.react-custom-option-button');
+    expect(container.querySelector(".react-custom-dialog-wrapper")).toBeNull();
+  });
 
-        fireEvent.click(closeButton);
+  it("should successfully show and close option dialog", () => {
+    MainComponent = () => {
+      const { showOptionDialog } = usePopup();
 
-        expect(container.querySelector(".react-custom-dialog-wrapper")).toBeNull();
-    });
+      return (
+        <div>
+          <button
+            onClick={() =>
+              showOptionDialog({
+                type: DialogType.DANGER,
+                text: "This is a test",
+                options: [
+                  { type: "cancel", name: "Cancel" },
+                  { type: "confirm", name: "Confirm" },
+                ],
+              })
+            }
+          >
+            Show Alert
+          </button>
+        </div>
+      );
+    };
 
-    it('should successfully show and close option dialog', () => {
+    const { container } = render(<ComponentToTest />);
 
-        MainComponent = () => {
-            const { showOptionDialog } = usePopup();
+    const button = container.querySelector("button")!;
 
-            return (
-                <div>
-                    <button onClick={() => showOptionDialog({
-                        type: DialogType.DANGER,
-                        text: 'This is a test',
-                        options: [{ type: 'cancel', name: 'Cancel' }, { type: 'confirm', name: 'Confirm' }]
-                    })}>Show Alert</button>
-                </div>
-            )
-        };
+    fireEvent.click(button);
 
-        const { container } = render(<ComponentToTest />);
+    const dialogWrapper = container.querySelector(
+      ".react-custom-dialog-wrapper"
+    )!;
+    const dialogFooter = dialogWrapper.querySelector(".react-custom-footer")!;
+    const footerButtons = dialogFooter.querySelectorAll(
+      ".react-custom-option-button"
+    );
 
-        const button = container.querySelector('button');
+    expect(footerButtons).toHaveLength(2);
 
-        fireEvent.click(button);
+    const cancelButton = footerButtons[0];
+    const confirmButton = footerButtons[1];
 
-        const dialogWrapper = container.querySelector(".react-custom-dialog-wrapper");
-        const dialogFooter = dialogWrapper.querySelector('.react-custom-footer');
-        const footerButtons = dialogFooter.querySelectorAll('.react-custom-option-button');
+    expect(cancelButton.innerHTML).toBe("Cancel");
+    expect(confirmButton.innerHTML).toBe("Confirm");
 
-        expect(footerButtons).toHaveLength(2);
+    fireEvent.click(confirmButton);
 
-        const cancelButton = footerButtons[0];
-        const confirmButton = footerButtons[1];
+    expect(container.querySelector(".react-custom-dialog-wrapper")).toBeNull();
+  });
 
-        expect(cancelButton.innerHTML).toBe('Cancel');
-        expect(confirmButton.innerHTML).toBe('Confirm');
+  it("should successfully show and close input dialog (single input) and get back the result", () => {
+    const onInputDialogSubmit = jest.fn((result: { [key: string]: any }) => {});
 
-        fireEvent.click(confirmButton);
+    MainComponent = () => {
+      const { showInputDialog } = usePopup();
 
-        expect(container.querySelector(".react-custom-dialog-wrapper")).toBeNull();
-    });
+      return (
+        <div>
+          <button
+            onClick={() =>
+              showInputDialog({
+                type: DialogType.DANGER,
+                text: "This is a test",
+                input: { inputType: "text", name: "name" },
+                options: [
+                  { type: "cancel", name: "Cancel" },
+                  { type: "confirm", name: "Confirm" },
+                ],
+                onConfirm: onInputDialogSubmit,
+              })
+            }
+          >
+            Show Alert
+          </button>
+        </div>
+      );
+    };
 
-    it('should successfully show and close input dialog (single input) and get back the result', () => {
+    const { container } = render(<ComponentToTest />);
 
-        const onInputDialogSubmit = jest.fn((result: { [key: string]: any }) => { });
+    const button = container.querySelector("button")!;
 
-        MainComponent = () => {
-            const { showInputDialog } = usePopup();
+    fireEvent.click(button);
 
-            return (
-                <div>
-                    <button onClick={() => showInputDialog({
-                        type: DialogType.DANGER,
-                        text: 'This is a test',
-                        input: { inputType: 'text', name: 'name' },
-                        options: [{ type: 'cancel', name: 'Cancel' }, { type: 'confirm', name: 'Confirm' }],
-                        onConfirm: onInputDialogSubmit
-                    })}>Show Alert</button>
-                </div>
-            )
-        };
+    const dialogWrapper = container.querySelector(
+      ".react-custom-dialog-wrapper"
+    )!;
+    const dialogFooter = dialogWrapper.querySelector(".react-custom-footer")!;
+    const dialogMainSection = dialogWrapper.querySelector(
+      ".react-custom-inputs-container"
+    )!;
+    const footerButtons = dialogFooter.querySelectorAll(
+      ".react-custom-option-button"
+    );
+    const textInput = dialogMainSection.querySelector(
+      ".react-custom-input-item"
+    )!;
 
-        const { container } = render(<ComponentToTest />);
+    expect(footerButtons).toHaveLength(2);
 
-        const button = container.querySelector('button');
+    const cancelButton = footerButtons[0];
+    const confirmButton = footerButtons[1];
 
-        fireEvent.click(button);
+    expect(cancelButton.innerHTML).toBe("Cancel");
+    expect(confirmButton.innerHTML).toBe("Confirm");
 
-        const dialogWrapper = container.querySelector(".react-custom-dialog-wrapper");
-        const dialogFooter = dialogWrapper.querySelector('.react-custom-footer');
-        const dialogMainSection = dialogWrapper.querySelector('.react-custom-inputs-container');
-        const footerButtons = dialogFooter.querySelectorAll('.react-custom-option-button');
-        const textInput = dialogMainSection.querySelector('.react-custom-input-item');
+    fireEvent.change(textInput, { target: { value: "John Doe" } });
 
-        expect(footerButtons).toHaveLength(2);
+    fireEvent.click(confirmButton);
 
-        const cancelButton = footerButtons[0];
-        const confirmButton = footerButtons[1];
+    expect(onInputDialogSubmit).toHaveBeenCalledTimes(1);
+    expect(onInputDialogSubmit).toHaveBeenCalledWith({ name: "John Doe" });
 
-        expect(cancelButton.innerHTML).toBe('Cancel');
-        expect(confirmButton.innerHTML).toBe('Confirm');
-
-        fireEvent.change(textInput, { target: { value: 'John Doe' } })
-
-        fireEvent.click(confirmButton);
-
-        expect(onInputDialogSubmit).toHaveBeenCalledTimes(1);
-        expect(onInputDialogSubmit).toHaveBeenCalledWith({ name: 'John Doe' });
-
-        expect(container.querySelector(".react-custom-dialog-wrapper")).toBeNull();
-    });
-})
-
-describe('should successfully show and close toasts', () => {
-
-    it('should successfully show and close toast', async () => {
-        MainComponent = () => {
-            const { showToast } = usePopup();
-
-            return (
-                <div>
-                    <button onClick={() => showToast({
-                        type: DialogType.DANGER,
-                        text: 'This is a test'
-                    })}>Show Toast</button>
-                </div>
-            )
-        };
-
-        const { container } = render(<ComponentToTest />);
-
-        const button = container.querySelector('button');
-
-        fireEvent.click(button);
-
-        const toastWrappers = container.querySelector('.react-custom-toast-bottom-right');
-
-        const toast = toastWrappers.querySelector('.react-custom-toast');
-
-        const closeButton = toast.querySelector('.close-button');
-
-        await act(async () => {
-            fireEvent.click(closeButton);
-            await new Promise(resolve => setTimeout(resolve, 500));
-        })
-
-        expect(container.querySelector(".react-custom-toast-bottom-right").querySelector('.react-custom-toast')).toBeNull();
-    });
+    expect(container.querySelector(".react-custom-dialog-wrapper")).toBeNull();
+  });
 });
 
+describe("should successfully show and close toasts", () => {
+  it("should successfully show and close toast", async () => {
+    MainComponent = () => {
+      const { showToast } = usePopup();
+
+      return (
+        <div>
+          <button
+            onClick={() =>
+              showToast({
+                type: DialogType.DANGER,
+                text: "This is a test",
+              })
+            }
+          >
+            Show Toast
+          </button>
+        </div>
+      );
+    };
+
+    const { container } = render(<ComponentToTest />);
+
+    const button = container.querySelector("button")!;
+
+    fireEvent.click(button);
+
+    const toastWrappers = container.querySelector(
+      ".react-custom-toast-bottom-right"
+    )!;
+
+    const toast = toastWrappers.querySelector(".react-custom-toast")!;
+
+    const closeButton = toast.querySelector(".close-button")!;
+
+    fireEvent.click(closeButton);
+
+    await new Promise((r) => setTimeout(r, 500));
+
+    expect(
+      container
+        .querySelector(".react-custom-toast-bottom-right")!
+        .querySelector(".react-custom-toast")
+    ).toBeNull();
+  });
+});
