@@ -1,14 +1,16 @@
 import React from "react";
-import {
-  AnimationType,
-  DialogType,
-  OutAnimationType,
-  PopupProvider,
-  usePopup,
-} from "./lib";
 
 import "./TestApp.css";
-import { ToastPosition } from "./lib/index";
+import {
+  AnimationType,
+  OutAnimationType,
+  PopupType,
+} from "./components/Popup/Popup.model";
+
+import { usePopup } from "./hooks/usePopup";
+
+import { PopupProvider } from "./PopupProvider";
+import { ToastPosition } from "./components/Toast/Toast.model";
 
 const buttonStyles: React.CSSProperties = {
   display: "block",
@@ -66,7 +68,7 @@ const MyComponent = () => {
         onClick={() =>
           showToast({
             text: "Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum",
-            type: DialogType.INFO,
+            type: PopupType.INFO,
             position: ToastPosition.BOTTOM_RIGHT,
             // timeoutDuration: 5000
           })
@@ -81,7 +83,7 @@ const MyComponent = () => {
         onClick={() =>
           showToast({
             text: "Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum",
-            type: DialogType.INFO,
+            type: PopupType.INFO,
             position: ToastPosition.BOTTOM_CENTER,
             // timeoutDuration: 5000
           })
@@ -96,7 +98,7 @@ const MyComponent = () => {
         onClick={() =>
           showToast({
             text: "Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum",
-            type: DialogType.INFO,
+            type: PopupType.INFO,
             position: ToastPosition.BOTTOM_LEFT,
             // timeoutDuration: 5000
           })
@@ -111,7 +113,7 @@ const MyComponent = () => {
         onClick={() =>
           showToast({
             text: "Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum",
-            type: DialogType.INFO,
+            type: PopupType.INFO,
             position: ToastPosition.TOP_RIGHT,
             // timeoutDuration: 5000
           })
@@ -126,7 +128,7 @@ const MyComponent = () => {
         onClick={() =>
           showToast({
             text: "Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum",
-            type: DialogType.INFO,
+            type: PopupType.INFO,
             position: ToastPosition.TOP_LEFT,
             timeoutDuration: 5000,
             showProgress: true,
@@ -142,7 +144,7 @@ const MyComponent = () => {
         onClick={() =>
           showToast({
             text: "Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum Lorem Lipsum",
-            type: DialogType.INFO,
+            type: PopupType.INFO,
             position: ToastPosition.TOP_CENTER,
             timeoutDuration: 10000,
             showProgress: true,
@@ -173,11 +175,14 @@ const AlertConfigurator = () => {
         style={buttonStyles}
         onClick={() =>
           showAlert({
-            type: DialogType.DANGER,
+            type: PopupType.DANGER,
             text: "Text",
             title: "Title",
             animationType: AnimationType.FADE_IN,
             outAnimationType: OutAnimationType.FADE_OUT,
+            onDismissed: () => {
+              alert("clicked");
+            },
           })
         }
       >
@@ -188,7 +193,7 @@ const AlertConfigurator = () => {
         style={buttonStyles}
         onClick={() =>
           showAlert({
-            type: DialogType.WARNING,
+            type: PopupType.WARNING,
             text: "Text",
             title: "Title",
             animationType: AnimationType.ZOOM_IN,
@@ -202,7 +207,7 @@ const AlertConfigurator = () => {
         style={buttonStyles}
         onClick={() =>
           showAlert({
-            type: DialogType.SUCCESS,
+            type: PopupType.SUCCESS,
             text: "Text",
             title: "Title",
           })
@@ -215,7 +220,7 @@ const AlertConfigurator = () => {
         style={buttonStyles}
         onClick={() =>
           showAlert({
-            type: DialogType.INFO,
+            type: PopupType.INFO,
             text: "Text",
             title: "Title",
             allowOutsideClick: false,
@@ -229,7 +234,7 @@ const AlertConfigurator = () => {
         style={buttonStyles}
         onClick={() =>
           showAlert({
-            type: DialogType.WARNING,
+            type: PopupType.WARNING,
             text: "Text",
             title: "Title",
             animationType: AnimationType.FADE_IN,
@@ -289,7 +294,7 @@ const AlertConfigurator = () => {
             ],
             onConfirm: () =>
               showToast({
-                type: DialogType.SUCCESS,
+                type: PopupType.SUCCESS,
                 text: "User Deleted",
                 timeoutDuration: 3000,
                 showProgress: true,
@@ -330,10 +335,11 @@ const AlertConfigurator = () => {
                 inputType: "text",
                 name: "fname",
                 label: "First Name",
-                default: "John Doe",
                 validation: {
-                  minLength: {
-                    value: 5,
+                  validate: (val) => {
+                    return {
+                      success: val !== undefined,
+                    };
                   },
                 },
               },

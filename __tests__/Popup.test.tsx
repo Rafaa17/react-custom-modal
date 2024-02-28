@@ -1,8 +1,13 @@
 /** @jest-environment jsdom */
 
 import React from "react";
-import { DialogType, PopupProvider, usePopup } from "../src/lib";
-import { act, fireEvent, render, screen } from "@testing-library/react";
+
+import { act, fireEvent, render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+
+import { PopupType } from "@/components/Popup/Popup.model";
+import { usePopup } from "@/hooks/usePopup";
+import { PopupProvider } from "@/PopupProvider";
 
 const ComponentToTest = () => {
   return (
@@ -15,7 +20,7 @@ const ComponentToTest = () => {
 let MainComponent: () => JSX.Element;
 
 describe("should successfully show and close dialogs", () => {
-  it("should successfully show and close alert", () => {
+  it("should successfully show and close alert", async () => {
     MainComponent = () => {
       const { showAlert } = usePopup();
 
@@ -24,7 +29,7 @@ describe("should successfully show and close dialogs", () => {
           <button
             onClick={() =>
               showAlert({
-                type: DialogType.DANGER,
+                type: PopupType.DANGER,
                 text: "This is a test",
               })
             }
@@ -39,7 +44,7 @@ describe("should successfully show and close dialogs", () => {
 
     const button = container.querySelector("button")!;
 
-    fireEvent.click(button);
+    await userEvent.click(button);
 
     const dialogWrapper = container.querySelector(
       ".react-custom-dialog-wrapper"
@@ -49,7 +54,7 @@ describe("should successfully show and close dialogs", () => {
       ".react-custom-option-button"
     )!;
 
-    fireEvent.click(closeButton);
+    await userEvent.click(closeButton);
 
     expect(container.querySelector(".react-custom-dialog-wrapper")).toBeNull();
   });
@@ -63,7 +68,7 @@ describe("should successfully show and close dialogs", () => {
           <button
             onClick={() =>
               showOptionDialog({
-                type: DialogType.DANGER,
+                type: PopupType.DANGER,
                 text: "This is a test",
                 options: [
                   { type: "cancel", name: "Cancel" },
@@ -82,7 +87,9 @@ describe("should successfully show and close dialogs", () => {
 
     const button = container.querySelector("button")!;
 
-    fireEvent.click(button);
+    act(() => {
+      fireEvent.click(button);
+    });
 
     const dialogWrapper = container.querySelector(
       ".react-custom-dialog-wrapper"
@@ -100,13 +107,17 @@ describe("should successfully show and close dialogs", () => {
     expect(cancelButton.innerHTML).toBe("Cancel");
     expect(confirmButton.innerHTML).toBe("Confirm");
 
-    fireEvent.click(confirmButton);
+    act(() => {
+      fireEvent.click(confirmButton);
+    });
 
     expect(container.querySelector(".react-custom-dialog-wrapper")).toBeNull();
   });
 
   it("should successfully show and close input dialog (single input) and get back the result", () => {
-    const onInputDialogSubmit = jest.fn((result: { [key: string]: any }) => {});
+    const onInputDialogSubmit = jest.fn(
+      (_result: { [key: string]: any }) => {}
+    );
 
     MainComponent = () => {
       const { showInputDialog } = usePopup();
@@ -116,7 +127,7 @@ describe("should successfully show and close dialogs", () => {
           <button
             onClick={() =>
               showInputDialog({
-                type: DialogType.DANGER,
+                type: PopupType.DANGER,
                 text: "This is a test",
                 input: { inputType: "text", name: "name" },
                 options: [
@@ -137,7 +148,9 @@ describe("should successfully show and close dialogs", () => {
 
     const button = container.querySelector("button")!;
 
-    fireEvent.click(button);
+    act(() => {
+      fireEvent.click(button);
+    });
 
     const dialogWrapper = container.querySelector(
       ".react-custom-dialog-wrapper"
@@ -163,7 +176,9 @@ describe("should successfully show and close dialogs", () => {
 
     fireEvent.change(textInput, { target: { value: "John Doe" } });
 
-    fireEvent.click(confirmButton);
+    act(() => {
+      fireEvent.click(confirmButton);
+    });
 
     expect(onInputDialogSubmit).toHaveBeenCalledTimes(1);
     expect(onInputDialogSubmit).toHaveBeenCalledWith({ name: "John Doe" });
@@ -182,7 +197,7 @@ describe("should successfully show and close toasts", () => {
           <button
             onClick={() =>
               showToast({
-                type: DialogType.DANGER,
+                type: PopupType.DANGER,
                 text: "This is a test",
               })
             }
@@ -197,7 +212,7 @@ describe("should successfully show and close toasts", () => {
 
     const button = container.querySelector("button")!;
 
-    fireEvent.click(button);
+    await userEvent.click(button);
 
     const toastWrappers = container.querySelector(
       ".react-custom-toast-bottom-right"
@@ -207,7 +222,8 @@ describe("should successfully show and close toasts", () => {
 
     const closeButton = toast.querySelector(".close-button")!;
 
-    fireEvent.click(closeButton);
+    // because of internal setTimeout in the code when hiding the toast
+    await userEvent.click(closeButton, { delay: 300 });
 
     await new Promise((r) => setTimeout(r, 500));
 
