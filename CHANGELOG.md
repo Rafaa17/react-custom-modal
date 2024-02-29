@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Released]
 
+## [1.3.0] - 2024-02-28
+### Changed
+- Refactored code as per common React project standards
+- Made onDismissed prop available to all popup types
+
 ## [1.2.0] - 2022-03-25
 ### Changed
 - Added option to pass custom icon
