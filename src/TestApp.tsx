@@ -5,12 +5,12 @@ import {
   AnimationType,
   OutAnimationType,
   PopupType,
-} from "./components/Popup/Popup.model";
+} from "@/components/Popup/Popup.model";
 
-import { usePopup } from "./hooks/usePopup";
+import { usePopup } from "@/hooks/usePopup";
 
 import { PopupProvider } from "./PopupProvider";
-import { ToastPosition } from "./components/Toast/Toast.model";
+import { ToastPosition } from "@/components/Toast/Toast.model";
 
 const buttonStyles: React.CSSProperties = {
   display: "block",
