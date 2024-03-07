@@ -19,17 +19,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: "https://registry.npmjs.org"
 
-      - name: Install Deps
-        run: |
-          npm install
+        # - name: Install Deps
+        #   run: |
+        #     npm install
 
-      - name: Build
-        run: |
-          npm run build
+        # - name: Build
+        #   run: |
+        #     npm run build
 
-      - name: Publish
-        run: |
-          npm publish
+        # - name: Publish
+        #   run: |
+        #     npm publish
 
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -46,5 +46,5 @@ jobs:
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "username@users.noreply.github.com"
           git tag -a v${{ steps.package-version.outputs.current-version}} -m "version v${{ steps.package-version.outputs.current-version}}"
-          gh release create v${{ steps.package-version.outputs.current-version}}
-          git push
+          git push origin v${{ steps.package-version.outputs.current-version}}
+          gh release create v${{ steps.package-version.outputs.current-version}} --generate-notes
