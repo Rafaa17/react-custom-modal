@@ -19,17 +19,17 @@ jobs:
           node-version: ${{ matrix.node-version }}
           registry-url: "https://registry.npmjs.org"
 
-        # - name: Install Deps
-        #   run: |
-        #     npm install
+      - name: Install Deps
+        run: |
+          npm install
 
-        # - name: Build
-        #   run: |
-        #     npm run build
+      - name: Build
+        run: |
+          npm run build
 
-        # - name: Publish
-        #   run: |
-        #     npm publish
+      - name: Publish
+        run: |
+          npm publish
 
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
