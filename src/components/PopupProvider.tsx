@@ -12,8 +12,8 @@ import {
 } from "@/components/Toast/Toast.model";
 import { PopupReducer } from "@/hooks/usePopupReducer";
 import React, { useReducer } from "react";
-import { PopupContext } from "./context/PopupContext";
-import { IPopupContext } from "./context/PopupContext.model";
+import { PopupContext } from "../context/PopupContext";
+import { IPopupContext } from "../context/PopupContext.model";
 
 export const PopupProvider = ({ children }: { children: any }) => {
   const initialState: IPopupContext = {

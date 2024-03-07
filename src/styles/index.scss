@@ -32,12 +32,10 @@
   align-items: center;
   justify-content: center;
 
-
   /* width */
   ::-webkit-scrollbar {
     width: 16px;
   }
-
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
@@ -46,7 +44,6 @@
     border-radius: 8px;
     background-clip: padding-box;
   }
-
 }
 
 .react-custom-dialog-wrapper {
@@ -62,7 +59,6 @@
   justify-content: space-between;
   display: flex;
   flex-direction: column;
-
 }
 
 .react-custom-title {
@@ -169,19 +165,23 @@
   margin-left: 10px;
 }
 
-.react-custom-header-info, .react-custom-toast-info {
+.react-custom-header-info,
+.react-custom-toast-info {
   background-color: lightblue;
 }
 
-.react-custom-header-success, .react-custom-toast-success {
+.react-custom-header-success,
+.react-custom-toast-success {
   background-color: lightgreen;
 }
 
-.react-custom-header-warning, .react-custom-toast-warning {
+.react-custom-header-warning,
+.react-custom-toast-warning {
   background-color: orange;
 }
 
-.react-custom-header-danger, .react-custom-toast-danger {
+.react-custom-header-danger,
+.react-custom-toast-danger {
   background-color: coral;
 }
 
@@ -266,6 +266,6 @@
 }
 
 .react-custom-input-item:focus {
-    outline: none;
-    border: 1px solid lightblue;
+  outline: none;
+  border: 1px solid lightblue;
 }

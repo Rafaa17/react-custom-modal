@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event";
 
 import { PopupType } from "@/components/Popup/Popup.model";
 import { usePopup } from "@/hooks/usePopup";
-import { PopupProvider } from "@/PopupProvider";
+import { PopupProvider } from "@/components/PopupProvider";
 
 const ComponentToTest = () => {
   return (

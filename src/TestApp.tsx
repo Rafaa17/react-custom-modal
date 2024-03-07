@@ -9,7 +9,7 @@ import {
 
 import { usePopup } from "@/hooks/usePopup";
 
-import { PopupProvider } from "./PopupProvider";
+import { PopupProvider } from "@/components/PopupProvider";
 import { ToastPosition } from "@/components/Toast/Toast.model";
 
 const buttonStyles: React.CSSProperties = {
