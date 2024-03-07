@@ -3,7 +3,7 @@ name: Deploy
 on: workflow_dispatch
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     strategy:
@@ -33,3 +33,19 @@ jobs:
 
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - name: Create Release
+        env:
+          CI_COMMIT_MESSAGE: Continuous Integration Build Artifacts
+          CI_COMMIT_AUTHOR: Continuous Integration
+        run: |
+          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+          git config --global user.email "username@users.noreply.github.com"
+          git tag -a v
+          git add k8s/apps/${{ inputs.environment }}/${{ inputs.app }}/*
+          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
+          git push
