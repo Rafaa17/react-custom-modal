@@ -1,6 +1,6 @@
 {
   "name": "react-custom-popup",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "homepage": "https://Rafaa17.github.io/react-custom-modal",
   "description": "React Popup Library build using React Context API",
   "main": "build/index.js",
